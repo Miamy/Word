@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2015.03.30 20:12:16.309,=C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
-    <Transaction>2015.03.30 20:13:00.171,D:\Programs\Word\UMain.dfm=C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
-    <Transaction>2015.03.30 20:13:00.171,D:\Programs\Word\UMain.pas=C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
-    <Transaction>2015.03.30 20:13:16.955,D:\Programs\Word\WordGenerator.dproj=C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.955,C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Project2.dproj=D:\Programs\Word\WordGenerator.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.171,C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.dfm=D:\Programs\Word\UMain.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.309,=C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.171,C:\Users\Miamy\Documents\Embarcadero\Studio\Projects\Unit2.pas=D:\Programs\Word\UMain.pas</Transaction>
   </Transactions>
 </BorlandProject>

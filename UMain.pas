@@ -148,7 +148,11 @@ begin
         WordDocument.Tables.Item(1).Rows.Item(1).Select;
         for i := 1 to StationsList.Count do
         begin
-          WordApplication.Selection.MoveDown(wdLine, i * (FilesPerStation + 1), wdMove);
+          try
+            WordApplication.Selection.MoveDown(wdLine, i * (FilesPerStation + 1), wdMove);
+          except on E: Exception do
+            WordApplication.Selection.MoveDown(wdLine, i * (FilesPerStation), wdMove);
+          end;
           WordApplication.Selection.InsertBreak(wdPageBreak);
           Application.ProcessMessages;
         end;
@@ -173,6 +177,7 @@ end;
 procedure TFMain.btnSelectDocClick(Sender: TObject);
 begin
   SaveDialog.InitialDir := ExtractFilePath(edSelectDoc.Text);
+  SaveDialog.FileName := edSelectDoc.Text;
   if SaveDialog.Execute then
     edSelectDoc.Text := SaveDialog.FileName;
 end;
@@ -194,6 +199,8 @@ begin
   FilesList := TStringList.Create;
   StationsList := TStringList.Create;
   Counted := false;
+  edSelectPictures.Text := ExtractFilePath(Application.ExeName);
+  edSelectDoc.Text := ExtractFilePath(Application.ExeName) + 'test.doc';
 end;
 
 procedure TFMain.FormDestroy(Sender: TObject);
