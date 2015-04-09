@@ -317,11 +317,6 @@ Dockable=1
 StayOnTop=0
 SplitPos=111
 
-[PropInspDesignerSelection]
-ArrangeBy=Name
-SelectedItem=Action,OnBuffer
-ExpandedItems="LiveBindings Designer=0",Anchors=0,BorderIcons=0,Constraints=0
-
 [TFileExplorerForm]
 PercentageSizes=1
 Create=1

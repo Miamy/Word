@@ -15,8 +15,6 @@ type
     edSelectDoc: TEdit;
     btnSelectPictures: TButton;
     btnSelectDoc: TButton;
-    WordApplication: TWordApplication;
-    WordDocument: TWordDocument;
     btnGenerate: TButton;
     btnExit: TButton;
     btnCount: TButton;
@@ -35,6 +33,9 @@ type
     Label7: TLabel;
     seScale: TSpinEdit;
     lblWord: TLabel;
+    WordApplication: TWordApplication;
+    WordDocument: TWordDocument;
+    lblFilesPerPage: TLabel;
     procedure btnExitClick(Sender: TObject);
     procedure btnGenerateClick(Sender: TObject);
     procedure btnCountClick(Sender: TObject);
@@ -43,14 +44,17 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure btnSelectDocClick(Sender: TObject);
     procedure btnSelectPicturesClick(Sender: TObject);
+    procedure seScaleChange(Sender: TObject);
   private
     { Private declarations }
     FilesList, StationsList: TStringList;
     Counted: boolean;
+    FilesPerPage: integer;
     function GetPathToPictures: string;
 
     property PathToPictures: string read GetPathToPictures;
     procedure CountFiles;
+    procedure CalcFilesPerPage;
 
     function CentimetersToPoints(aValue: Single): Single;
     function MillimetersToPoints(aValue: Single): Single;
@@ -76,6 +80,37 @@ begin
   Close;
 end;
 
+type
+  ECalcError = class(Exception)
+  end;
+
+procedure TFMain.CalcFilesPerPage;
+begin
+  try
+    if (FilesList.Count = 0) or not FileExists(PathToPictures + FilesList[0]) or
+       (Pos(ExtractFileExt(PathToPictures + FilesList[0]), GraphicFilter(TGraphic)) = 0) then
+      raise ECalcError.Create('');
+
+  PictureImage.Visible := false;
+  try
+    PictureImage.Picture.LoadFromFile(PathToPictures + FilesList[0]);
+  except
+    raise ECalcError.Create('');
+  end;
+
+  if PictureImage.Picture.Height * seScale.Value = 0 then
+    raise ECalcError.Create('');
+
+  FilesPerPage := Ceil((WordDocument.PageSetup.PageHeight -
+    WordDocument.PageSetup.TopMargin - WordDocument.PageSetup.BottomMargin) /
+    PixelsToPoints(PictureImage.Picture.Height * seScale.Value / 100)) - 1;
+  lblFilesPerPage.Caption := 'Files per page: ' + IntToStr(FilesPerPage);
+
+  except on ECalcError: Exception do
+    lblFilesPerPage.Caption := 'Files per page: unknown';
+  end;
+end;
+
 function TFMain.CentimetersToPoints(aValue: Single): Single;
 begin
   Result := 28.35 * aValue;
@@ -96,7 +131,6 @@ begin
          'Confirm', MB_ICONWARNING or MB_YESNO or MB_DEFBUTTON1) = mrNo then
       exit;
 
-  PictureImage.Visible := false;
   lblWord.Visible := true;
   WordApplication.Connect;
   try
@@ -117,6 +151,7 @@ begin
         lblWord.Visible := false;
         PictureImage.Visible := true;
         FilesPerStation := FilesList.Count div StationsList.Count;
+
         for i := 0 to StationsList.Count - 1 do
         begin
           Range := WordDocument.Tables.Item(1).Cell((i * (FilesPerStation + 1)) + 1, 1).Range;
@@ -149,22 +184,38 @@ begin
         for i := 1 to StationsList.Count do
         begin
           try
-            WordApplication.Selection.MoveDown(wdLine, i * (FilesPerStation + 1), wdMove);
+            WordApplication.Selection.MoveDown(wdLine,
+              i * (Max(FilesPerStation, FilesPerPage) + 1), wdMove);
           except on E: Exception do
             WordApplication.Selection.MoveDown(wdLine, i * (FilesPerStation), wdMove);
           end;
           WordApplication.Selection.InsertBreak(wdPageBreak);
           Application.ProcessMessages;
         end;
+//        i := WordDocument.Tables.Item(1).Rows.Count;
+//        while i > 1 do
+//        begin
+//          WordDocument.Tables.Item(1).Rows.Item(i).Select;
+//          if ((FilesPerStation <= FilesPerPage) and (i mod (FilesPerPage + 2) = 0)) or
+//             ((FilesPerStation > FilesPerPage) and (Trim(WordApplication.Selection.Text) <> '')) then
+//          begin
+//            WordApplication.Selection.InsertBreak(wdPageBreak);
+//            Dec(i, 2);
+//          end;
+//          Dec(i);
+//          Application.ProcessMessages;
+//        end;
 
         WordDocument.SaveAs(edSelectDoc.Text);
         WordApplication.Visible := true;
+        PictureImage.Visible := false;
       finally
         WordDocument.Disconnect;
       end;
     except
       on E: Exception do
       begin
+        PictureImage.Visible := false;
         WordApplication.Quit;
         raise;
       end;
@@ -192,6 +243,7 @@ begin
     edSelectPictures.Text := InputDir;
     Counted := false;
   end;
+  CountFiles;
 end;
 
 procedure TFMain.FormCreate(Sender: TObject);
@@ -201,6 +253,7 @@ begin
   Counted := false;
   edSelectPictures.Text := ExtractFilePath(Application.ExeName);
   edSelectDoc.Text := ExtractFilePath(Application.ExeName) + 'test.doc';
+  CountFiles;
 end;
 
 procedure TFMain.FormDestroy(Sender: TObject);
@@ -224,6 +277,11 @@ begin
   Result := aValue * 72 / 96;
 end;
 
+procedure TFMain.seScaleChange(Sender: TObject);
+begin
+  CalcFilesPerPage;
+end;
+
 procedure TFMain.CountFiles;
 var
   SR: TSearchRec;
@@ -245,6 +303,7 @@ begin
     end;
   lblStatus.Caption := Format('%d files for %d stations were found in directory', [FilesList.Count, StationsList.Count]);
   Counted := true;
+  CalcFilesPerPage;
 end;
 
 end.

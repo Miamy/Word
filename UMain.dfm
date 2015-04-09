@@ -3,7 +3,7 @@ object FMain: TFMain
   Top = 0
   BorderStyle = bsDialog
   Caption = 'MS Word table generator'
-  ClientHeight = 498
+  ClientHeight = 509
   ClientWidth = 563
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,10 +53,11 @@ object FMain: TFMain
     Center = True
     Proportional = True
     Stretch = True
+    Visible = False
   end
   object Label7: TLabel
-    Left = 424
-    Top = 72
+    Left = 16
+    Top = 442
     Width = 48
     Height = 14
     Caption = 'Scale,%:'
@@ -74,6 +75,19 @@ object FMain: TFMain
     Font.Style = [fsItalic]
     ParentFont = False
     Visible = False
+  end
+  object lblFilesPerPage: TLabel
+    Left = 164
+    Top = 442
+    Width = 171
+    Height = 14
+    Caption = 'Directory not processed yet'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object edSelectPictures: TEdit
     Left = 120
@@ -111,7 +125,7 @@ object FMain: TFMain
   end
   object btnGenerate: TButton
     Left = 160
-    Top = 456
+    Top = 476
     Width = 137
     Height = 25
     Caption = 'Generate'
@@ -120,7 +134,7 @@ object FMain: TFMain
   end
   object btnExit: TButton
     Left = 464
-    Top = 456
+    Top = 476
     Width = 75
     Height = 25
     Caption = 'Exit'
@@ -129,7 +143,7 @@ object FMain: TFMain
   end
   object btnCount: TButton
     Left = 16
-    Top = 456
+    Top = 476
     Width = 75
     Height = 25
     Caption = 'Count'
@@ -140,7 +154,7 @@ object FMain: TFMain
     Left = 16
     Top = 376
     Width = 523
-    Height = 65
+    Height = 57
     Caption = 'Margins, mm'
     TabOrder = 7
     object Label3: TLabel
@@ -203,6 +217,7 @@ object FMain: TFMain
       MinValue = 0
       TabOrder = 2
       Value = 20
+      OnChange = seScaleChange
     end
     object seBottom: TSpinEdit
       Left = 448
@@ -214,11 +229,12 @@ object FMain: TFMain
       MinValue = 0
       TabOrder = 3
       Value = 20
+      OnChange = seScaleChange
     end
   end
   object seScale: TSpinEdit
-    Left = 482
-    Top = 69
+    Left = 74
+    Top = 439
     Width = 57
     Height = 23
     Increment = 10
@@ -226,24 +242,25 @@ object FMain: TFMain
     MinValue = 0
     TabOrder = 8
     Value = 100
-  end
-  object WordApplication: TWordApplication
-    AutoConnect = False
-    ConnectKind = ckNewInstance
-    AutoQuit = False
-    Left = 48
-    Top = 144
-  end
-  object WordDocument: TWordDocument
-    AutoConnect = False
-    ConnectKind = ckNewInstance
-    Left = 168
-    Top = 144
+    OnChange = seScaleChange
   end
   object SaveDialog: TSaveDialog
     DefaultExt = '*.doc'
     Filter = 'Word files|*.doc'
     Left = 384
     Top = 128
+  end
+  object WordApplication: TWordApplication
+    AutoConnect = False
+    ConnectKind = ckNewInstance
+    AutoQuit = False
+    Left = 192
+    Top = 136
+  end
+  object WordDocument: TWordDocument
+    AutoConnect = False
+    ConnectKind = ckNewInstance
+    Left = 288
+    Top = 136
   end
 end

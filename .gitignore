@@ -1,0 +1,10 @@
+*.png
+*.exe
+Win32/Release/test.doc
+*.dcu
+__history/UMain.pas.~1~
+*.~dsk
+__history/UMain.pas.~2~
+*.doc
+*.~1~
+__history/UMain.dfm.~3~
